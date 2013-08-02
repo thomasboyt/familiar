@@ -1,40 +1,44 @@
 <img src="http://oi40.tinypic.com/20tqal5.jpg"
  alt="Symbolism!" title= "Symbolism!" align="middle" /> 
 
-_We sometimes underestimate the influence of little things._
---Charles W. Chesnutt
+_Correlation doesn't imply causation, but it does waggle its eyebrows suggestively and gesture furtively while mouthing 'look over there'._
+--[xkcd](http://xkcd.com/552/)
 
 Familiar
 ========
-Familiar will be a quantified reasoning assistant--a tool for those who want to improve their [inevitably imperfect thinking](http://en.wikipedia.org/wiki/List_of_cognitive_biases) regarding whatever it is they care about using [_SCIENCE_](http://en.wikipedia.org/wiki/Machine_learning).
+Familiar will be a quantified reasoning assistant--a tool for those who want to improve their [inevitably imperfect thinking](http://en.wikipedia.org/wiki/List_of_cognitive_biases) regarding whatever it is they care about using **_SCIENCE_**.
 
-Goals
------
-* A convenient UI for entering data and describing possible models on that data
-* Automated predicate and network building/checking to thoroughly explore the space of possible models on your data (this is NP-complete, may take a while...)
-* Guided experimentation to more accurately determine relationships between variables of interest and filter out spurious correlations
-* Data collection from various Quantified Self apps/devices and other web services via API
-* Fun pictures of personally relevant Bayes nets for you to look at
-* Better Living Through Numbers
+### Contact
+If you think you might have anything to contribute to Familiar, whether in the form of code, advice, bug reports, usability feedback, reading recommendations, vitriol, or crayon drawings, post on the [development mailing list](http://groups.google.com/group/guard-dev).
 
-A Warning
----------
-This is **pre-alpha software**, released primarily as a thought-provoking toy for Quantified Self enthusiasts and other nerds. For the foreseeable future, Familiar should only be seriously used by those with high confidence in their probability and statistics knowledge who have _read the source code_ and _understand exactly what's going on_. I'm in no way responsible for anything good or bad that happens as a result of you considering the output that Familiar presents you with as evidence of anything. Trust my math at your own risk!
+### Roadmap
+Weakly ordered by priority.
+
+* Easily deleting and editing variables, tags, and everything else (currently only have this for data).
+* Organized testing. Seems wise maybe.
+* Abandon Bayes net representation. Sounds super neat, but learning useful non-trivial Bayes nets probably won't happen with datasets of this size, and naive Bayes is really just telling us raw correlations between existing variables. Will probably just amount to unnecessary complexity. (Con: can't use the word "Bayesian" anymore. Oh well.)
+* GUI! This ain't the '80s.
+* Experiment with automatic predicate generation. Fun! Possibly really useful too!
+* Identifying goals, then guiding data collection to determine strongest predictors of fulfilling goals. Filtering out false-positive correlations happens here.
+* Make data with higher time resolution than one value per day work correctly with everything.
+* Downloading data from other apps.
+* Mobile integration. Cloud storage. Buzzwords.
+
+### A Warning
+This is currently **pre-alpha software**, released primarily as a thought-provoking toy for Quantified Self enthusiasts and other nerds. For the foreseeable future, Familiar should only be seriously used by those with high confidence in their probability and statistics knowledge who have _read the source code_ and _understand exactly what's going on_. I'm in no way responsible for anything good or bad that happens as a result of you considering the output that Familiar presents you with as evidence of anything. Trust my math at your own risk!
 
 For many imaginable uses of Familiar, improving your [mindfulness](http://en.wikipedia.org/wiki/Mindfulness_%28psychology%29) or [luminosity](http://lesswrong.com/lw/1xh/living_luminously/) would be a much faster and more effective way to accomplish your goal.
 
-Installation
-------------
-Easier, more limited usage:
+### Installation
+Easier, more limited:
 * Download and run the most recent [release](https://github.com/jferg/familiar/releases)
 
-More advanced usage:
+More advanced, possibly unstable:
 * Download this repository
 * Install [Leiningen](https://github.com/technomancy/leiningen)
 * `lein repl` from within the `familiar-master` directory
 
-Basic usage
------------
+### Basic usage
 * Define variables you'd like to measure. By default, variables are defined with a time resolution of one day.
 
 ```clojure
@@ -81,8 +85,8 @@ Basic usage
 (new-pred regular-exercise
   (fn [t]
     (every? true?
-    (map #(value exercise (minus t (days %)))
-         (range 1 4)))))
+      (map #(value exercise (minus t (days %)))
+           (range 1 4)))))
 ```
 
 * After collecting lots of data, see what correlations turn up.
@@ -101,14 +105,9 @@ Basic usage
 ;; the variables and predicates that have been defined.
 ```
 
-Contact
--------
-If you think you might have anything to contribute to Familiar, whether in the form of code, advice, bug reports, usability feedback, reading recommendations, vitriol, or crayon drawings, contact me at [my github username]uson2.718 at gmail.com, or [@jsfergalicious](https://twitter.com/jsfergalicious).
-
-License
--------
-Crafted with the loving assistance of the fine facilitators, students, and residents at [Hacker School](https://www.hackerschool.com/). If you like programming you should stop doing everything else and apply there [_right now_](https://www.hackerschool.com/apply).
-
+### License
 Copyright (C) 2013 James Ferguson
 
 Distributed under the Eclipse Public License, the same as Clojure.
+
+Crafted with the loving assistance of the fine facilitators, students, and residents at [Hacker School](https://www.hackerschool.com/). If you like programming you should stop doing everything else and apply there [_right now_](https://www.hackerschool.com/apply).

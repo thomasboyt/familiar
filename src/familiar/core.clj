@@ -12,7 +12,7 @@
               [connectivity :as lc]
               [core :as l]
               [schema :as ls]]
-            [clojure 
+            [clojure
               [walk :as walk]
               [pprint :refer [pprint]]
               [repl :refer [doc source]]]
@@ -38,8 +38,7 @@
 ;; Preferences
 ;;
 
-(spit "preferences" "" :append true)
-(if (= "" (slurp "preferences"))
+(if (not (.exists (clojure.java.io/file "preferences")))
   (spit "preferences" {:default "default"}))
 
 (def preferences (atom (read-string (slurp "preferences"))))
@@ -139,7 +138,7 @@
 (defmacro new-pred
   "Adds predicate to experiment.
      Example:
-     (new-pred accomplished 
+     (new-pred accomplished
                #(>= (value productivity %) 3)
      Accepts same optional arguments as new-var (:time-res, :unit, :tags)"
   [& exprs]
@@ -211,10 +210,10 @@
 
 (defn- erase-
   [coll & {:keys [instant] :or {instant @active-time}}]
-  (let [slices 
+  (let [slices
           (map (comp (partial slice instant) :name)
                (select variable (fields :name) (where {:name [in coll]})))
-        ids 
+        ids
           (map :id
                (select variable (fields :id) (where {:name [in coll]})))]
     (transaction
@@ -283,10 +282,10 @@
          #(apply plus % interval))
   (readable-time @active-time))
 
-(defn datagen 
-  "Generates data for every delta-t in a variable from instant 
+(defn datagen
+  "Generates data for every delta-t in a variable from instant
      to (plus instant duration) according to func."
-  [varname func delta-t duration 
+  [varname func delta-t duration
    & {:keys [instant] :or {instant @active-time}}]
   (let [[start end] (sort [instant (plus instant duration)])
         instants    (range-instants start end delta-t)]
@@ -294,7 +293,7 @@
       (map #(datum varname (str (func)) :instant %)
            instants))))
 
-;;;;;;;;;;;;;;; 
+;;;;;;;;;;;;;;;
 ;; Experiments
 ;;
 
@@ -317,55 +316,46 @@
 ;; Using
 ;;
 
-(def valid-fns 
+(def api-fns
   {:variable  #{'new-var 'tag-var 'display 'new-pred}
    :data      #{'data 'erase 'entered 'missing 'defaults 'change-time}
    :inference #{'correlations}
-   :familiar  #{'open! 'doc 'pref 'prefs}
-   :etc       #{'help}})
+   :familiar  #{'open! 'doc 'pref 'prefs 'help 'exit 'quit}})
+   
+(defn exit []
+  (println "Hooray! See you later.")
+  (System/exit 0))
+(def quit exit)
+
+(def api-fn?
+  (set (apply concat (vals api-fns))))
+
+(defn coerce-list [input]
+  (if (and (= \( (first input))
+           (= \) (last input)))
+    (read-string input)
+    (read-string (str "(" input ")"))))
 
 (defn cl-loop [] 
   (println "\n///")
-  (let [input (read-line)
-        input (if (and (= \( (first input))
-                       (= \) (last input)))
-                (read-string input)
-                (read-string (str \( input \))))]
+  (let [input (coerce-list (read-line))]
     (println "\\\\\\")
     (try
-      (cond 
-        (#{'(quit) '(exit)} input)
-        (println "Hooray! See you later.")
-
-        (#{'sudo} (first input))
-        (do (pprint (eval (second input)))
-            (cl-loop))
-
-        ((set (apply concat (vals valid-fns))) (first input))
-        (do (pprint (eval input))
-            (cl-loop))
-
-        :else
-        (do (println (str "That is not allowed here. Start a Clojure REPL "
-                          "if you want to think outside the box"))
-            (cl-loop)))
-      (catch Exception e
-        (println (str "That didn't work.\n" (.getMessage e)))
-        (cl-loop)))))
+      (if (api-fn? (first input))
+        (pprint (eval input))
+        (println "Unrecognized function."))
+      (catch Throwable t
+        (println (str "That didn't work.\n" (.getMessage t)))))
+    (recur)))
 
 (defn -main
   [& args]
   (alter-var-root #'*read-eval* (constantly false))
   (binding [*ns* (the-ns 'familiar.core)]
-    (cond
-      (seq args)
-      (do (println args)
-          (println
-            (->> (map read-string args)
-                 (map eval)
-                 doall)))
-
-      :else
+    (if (seq args)
+      (println
+        (doall
+          (map load-string args)))
       (do (println (str "\nFamiliar - Quantified Reasoning Assistant"
                         "\nThe active time is " (readable-time @active-time)
                         "\nFor help type \"help\""))
@@ -378,7 +368,7 @@
 (defn help-
   [domain]
   (let [domain (if domain
-                 (domain valid-fns)
+                 (domain api-fns)
                  (hash-set 'help))]
     (->> (for [[n v] (filter #(domain (first %))
                              (ns-map 'familiar.core))]
@@ -402,7 +392,7 @@
 (defn- str->key [s] 
   (->> (str s)
        (replace {\space \-})
-       (apply str) 
+       (apply str)
        .toLowerCase
        keyword))
 

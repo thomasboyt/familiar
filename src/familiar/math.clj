@@ -29,18 +29,12 @@
   (digraph {classpred featurepreds}))
 
 (defn value- [varname time]
-  (-> (select instance
-        (with variable
-          (fields :name))
-          (where {:time (slice time varname)
-                  :variable.name varname}))
-      first
-      :value
-      (as-> x
-        (if x
-          (read-string x)
-          nil))))
-
+  (let [[{value :value}] (select instance
+                           (with variable
+                             (fields :name))
+                           (where {:time (slice time varname)
+                                   :variable.name varname}))]
+    (and value (read-string value))))
 (defmacro value [varname t]
   `(value- ~(str varname) ~t))
 
@@ -133,7 +127,7 @@
               (map :variable)
               first
               (map :name)
-              set) 
+              set)
         skeleton
           (naive-bayes varname
                        (apply disj variables
@@ -151,7 +145,7 @@
          (remove #(nil? (key (first %))))
          (sort #(> (val (first %1)) (val (first %2)))))))
 
-(defmacro MLE
+(defmacro correlations
   "Returns a list of variables and their values most strongly correlated
      with the given variable taking on the given value."
   [expt varname desired-val
@@ -159,8 +153,9 @@
         :or {excl  []
              start '(parse-date "2013-07-01")
              end   '(plus @active-time (days 1))}}]
-  `(pprint (MLE- (str '~expt)
-                 (str '~varname)
-                 (str '~desired-val)
-                 :excl '~(vec (map str excl))
-                 :start ~start :end ~end)))
+  `(pprint (correlations- 
+             (str '~expt)
+             (str '~varname)
+             (str '~desired-val)
+             :excl '~(vec (map str excl))
+             :start ~start :end ~end)))

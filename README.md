@@ -1,8 +1,8 @@
+_Correlation doesn't imply causation, but it does waggle its eyebrows suggestively and gesture furtively while mouthing 'look over there'._
+-- [xkcd](http://xkcd.com/552/)
+
 <img src="http://oi40.tinypic.com/20tqal5.jpg"
  alt="Symbolism!" title= "Symbolism!" align="middle" /> 
-
-_Correlation doesn't imply causation, but it does waggle its eyebrows suggestively and gesture furtively while mouthing 'look over there'._
---[xkcd](http://xkcd.com/552/)
 
 Familiar
 ========
@@ -14,10 +14,11 @@ If you think you might have anything to contribute to Familiar, whether in the f
 ### Roadmap
 Weakly ordered by priority.
 
-* Easily deleting and editing variables, tags, and everything else (currently only have this for data).
+* Easily editing and deleting variables, tags, experiments, and everything else (currently only have this for data).
 * Organized testing. Seems wise maybe.
 * Abandon Bayes net representation. Sounds super neat, but learning useful non-trivial Bayes nets probably won't happen with datasets of this size, and naive Bayes is really just telling us raw correlations between existing variables. Will probably just amount to unnecessary complexity. (Con: can't use the word "Bayesian" anymore. Oh well.)
 * GUI! This ain't the '80s.
+* Factor analysis. Real scientists like it, I bet they're on to something.
 * Experiment with automatic predicate generation. Fun! Possibly really useful too!
 * Identifying goals, then guiding data collection to determine strongest predictors of fulfilling goals. Filtering out false-positive correlations happens here.
 * Make data with higher time resolution than one value per day work correctly with everything.

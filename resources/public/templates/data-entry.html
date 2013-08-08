@@ -1,0 +1,14 @@
+<div class="container">
+  <table class="table table-bordered">
+    <tr ng-repeat="item in data">
+      <td>
+        {{item.name}}
+      </td>
+      <td>
+        <input ng-model="item.value"></input>
+      </td>
+    </tr>
+  </table>
+
+  <button class="btn btn-primary" ng-click="saveBack()">Save</button>
+</div>

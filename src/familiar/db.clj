@@ -1,5 +1,6 @@
 (ns familiar.db
-  (:require [korma
+  (:require [clojure.data.json :refer [write-str]]
+            [korma
               [core :refer :all]
               [db :refer :all]]
             [clj-time
@@ -73,3 +74,13 @@
   (empty? (select instance
             (where {:variable_id (get-field :id variable varname)
                     :time time}))))
+                    
+(defn expt-variables [expt]
+  (let [[this-expt] (select experiment (with variable) (where {:name expt}))]
+    (set (map :name (:variable this-expt)))))
+    
+(defn all-vars []
+  (select variable (fields :fn :default :unit :name)))
+  
+(defn json-vars []
+  (write-str (all-vars)))

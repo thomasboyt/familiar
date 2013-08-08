@@ -15,5 +15,7 @@
                  [com.h2database/h2 "1.3.170"]
                  [swiss-arrows "0.6.0"]
                  [clj-time "0.5.1"]
-                 [jkkramer/loom "0.2.0"]]
+                 [jkkramer/loom "0.2.0"]
+                 [ring "1.2.0"]
+                 [compojure "1.1.5"]]
   :main familiar.core)
